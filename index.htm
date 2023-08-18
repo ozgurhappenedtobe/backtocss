@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Belanosima">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <meta charset="utf-8" name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <title>Responsive page</title>
+    <style media="screen">
+      body {
+        --primary-color: #393E46;
+        --secondary-color: #222831;
+      }
+      .light-theme {
+        --primary-color: #F5F5F5;
+        --secondary-color: #F2EAD3;
+      }
+      body {
+        position: absolute;
+        display: inline;
+        margin: 0;
+        padding: 0;
+        background-color: var(--primary-color);
+        width: 100%;
+        height: 100vh;
+        top: 0;
+        left: 0;
+      }
+      .container {
+        display: flex;
+        width: 100%;
+        height: 100px;
+        background: var(--primary-color);
+        justify-content: space-between;
+        align-items: center;
+        gap: 5px;
+        align-content: space-around;
+        margin-bottom: 5%;
+      }
+      .item:nth-child(2) {
+        flex-grow: 2;
+      }
+      .item {
+        background: var(--secondary-color);
+        height: 100%;
+        flex: 1 1 0px;
+        line-height: 100px;
+        text-align: center;
+        font-size: 38px;
+        font-family: Belanosima;
+        transition: font-size .2s;
+        transition-timing-function: ease-out;
+        user-select: none;
+      }
+      .item:hover {
+        font-size: 44px;
+      }
+      .top-icon {
+        font-size: 38px !important;
+        position: relative;
+        top: 6px;
+
+      }
+
+      i {
+        user-select: none;
+      }
+      .container button {
+        flex-grow: 0.2;
+        border: none;
+        background: var(--primary-color);
+      }
+      .slider-container {
+        background: var(--secondary-color);
+        width: 100%;
+        height: 60%;
+        padding: 25px 0px;
+      }
+      .slider-container > img {
+        width: relative;
+        height: 100%;
+        margin-left: 0%;
+      }
+      .dot-container {
+        display: flex;
+        background: var(--secondary-color);
+        height: 5%;
+        margin-left: 50%;
+        transform: translateX(-50%);
+        max-width: 10%;
+        justify-content: space-between;
+        align-content: space-around;
+        align-items: center;
+        gap: 5px;
+      }
+      .nav-item {
+        font-size: 32px !important;
+      }
+      .nav-circle {
+        font-size: 24px !important;
+
+      }
+      #slider-img {
+        position: relative;
+        right: 0px;
+      }
+      #slider-img:hover {
+        margin-right: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="item"><i class="material-icons top-icon">home</i> Home</div>
+      <div class="item">Test 1</div>
+      <div class="item">Test 2</div>
+      <div class="item">Test 3</div>
+      <button class="item" id="theme-button"><i class="material-icons top-icon">sunny</i></button>
+
+    </div>
+    <div class="slider-container">
+      <img src="skype-logo.svg" id="slider-img" alt="">
+    </div>
+    <div class="dot-container">
+      <i class="material-icons nav-item">navigate_before</i>
+      <i class="material-icons nav-item nav-circle" onclick="changeImage(0)">circle</i>
+      <i class="material-icons nav-item nav-circle" onclick="changeImage(1)">circle</i>
+      <i class="material-icons nav-item nav-circle" onclick="changeImage(2)">circle</i>
+      <i class="material-icons nav-item">navigate_next</i>
+    </div>
+  </body>
+  <script type="text/javascript">
+    var is_dark_mode = true;
+    var imgOrder = 0;
+    function Initialize(){
+      // dark and light theme
+        var themeButton = document.getElementById('theme-button');
+
+        themeButton.addEventListener("click", () => {
+          var themeIcon = themeButton.getElementsByTagName("i")[0];
+          changeTheme();
+          if (is_dark_mode){
+            themeIcon.style.transform = "rotateZ(180deg)";
+            themeIcon.innerHTML = "brightness_2";
+          }
+          else {
+            themeIcon.style.transform = "rotateZ(0deg)";
+            themeIcon.innerHTML = "sunny";
+          }
+          is_dark_mode = !is_dark_mode;
+        })
+      // bottom navs
+        var circleNavs = document.getElementsByClassName("nav-circle");
+        var leftArrow = document.getElementsByClassName("nav-item")[0]
+        var rightArrow = document.getElementsByClassName("nav-item")[circleNavs.length + 1];
+
+        leftArrow.addEventListener("click", function(){
+          imgOrder -= 1;
+          if (imgOrder == -1) imgOrder = circleNavs.length - 1;
+          changeImage(imgOrder);
+        })
+        rightArrow.addEventListener("click", function(){
+          imgOrder += 1;
+          if (imgOrder == circleNavs.length) imgOrder = 0;
+          changeImage(imgOrder);
+        })
+    }
+    Initialize();
+    function changeTheme(){
+      document.body.classList.toggle("light-theme");
+    }
+    function changeImage(order){
+      var imgEle = document.getElementById("slider-img");
+      imgOrder = order;
+      $(imgEle).stop(stopAllAnimations=true, goToEnd=true)
+      switch (order) {
+        case 0:
+          imgEle.src = "skype-logo.svg";
+          break;
+        case 1:
+          imgEle.src = "instagram-logo.svg";
+          break;
+        case 2:
+          imgEle.src = "snapchat-logo.png";
+          break;
+        default:
+
+      }
+      var ratio = imgEle.naturalHeight / imgEle.naturalWidth;
+      $(imgEle).css({
+        "opacity": 0,
+        "marginLeft": `${ratio * 60}%`
+      }).animate({
+        "marginLeft": "0%",
+        "opacity": 1
+      }, 800)
+    }
+  </script>
+</html>
